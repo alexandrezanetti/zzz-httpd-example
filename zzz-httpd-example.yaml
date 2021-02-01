@@ -13,8 +13,6 @@ metadata:
     name: "zzz-httpd-example"
 spec:
   replicas: 1
-  selector:
-    name: "zzz-httpd-example"
   template:
     spec:
       containers:
@@ -58,8 +56,6 @@ metadata:
     - name: web
       port: 8080
       targetPort: 8080
-    selector:
-      name: "zzz-httpd-example"
 ---
 kind: Route
 apiVersion: v1
@@ -74,5 +70,3 @@ metadata:
       to:
         kind: Service
         name: "zzz-httpd-example"
-    selector:
-      name: "zzz-httpd-example"
