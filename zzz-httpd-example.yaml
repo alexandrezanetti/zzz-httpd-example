@@ -1,1 +1,41 @@
-a
+---
+kind: "Deployment"
+apiVersion: "apps/v1"
+metadata:
+  name: "zzz-httpd-example"
+  namespace: "zzz-httpd-example"
+spec:
+  template: 
+    metadata:
+    spec:
+      containers:
+        - name: "zzz-httpd-example"
+          image: "nginxdemos/hello"
+          ports:
+            - containerPort: 8080
+              name: "porta1"
+              protocol: TCP
+  replicas: 1
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: "zzz-httpd-example"
+  namespace: "zzz-httpd-example"
+  spec:
+    ports:
+    - name: web
+      port: 8080
+      targetPort: 8080
+    selector:
+      name: "zzz-httpd-example"
+---
+kind: Route
+apiVersion: v1
+metadata:
+  spec:
+spec:
+path: /
+  to:
+    kind: Service
+    name: "zzz-httpd-example"
