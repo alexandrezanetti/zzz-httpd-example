@@ -1,20 +1,48 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "zzz-httpd-example"
+---  
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: "zzz-httpd-example"
+  namespace: "zzz-httpd-example"
+  labels:
+    app: "zzz-httpd-example"
+    name: "zzz-httpd-example"
+spec:
+  replicas: 1
+  selector:
+    name: "zzz-httpd-example"
+  template:
+    spec:
+      containers:
+      - image: "nginxdemos/hello"
+        name: "zzz-httpd-example"
+        ports:
+        - containerPort: 8080
+          name: http-server
 ---
 kind: "Deployment"
 apiVersion: "apps/v1"
 metadata:
   name: "zzz-httpd-example"
   namespace: "zzz-httpd-example"
+  labels:
+    app: "zzz-httpd-example"
+    name: "zzz-httpd-example"
 spec:
   template: 
     metadata:
-    spec:
-      containers:
-        - name: "zzz-httpd-example"
-          image: "nginxdemos/hello"
-          ports:
-            - containerPort: 8080
-              name: "porta1"
-              protocol: TCP
+      spec:
+        containers:
+          - name: "zzz-httpd-example"
+            image: "nginxdemos/hello"
+            ports:
+              - containerPort: 8080
+                name: "porta1"
+                protocol: TCP
   replicas: 1
 ---
 kind: Service
@@ -22,6 +50,9 @@ apiVersion: v1
 metadata:
   name: "zzz-httpd-example"
   namespace: "zzz-httpd-example"
+  labels:
+    app: "zzz-httpd-example"
+    name: "zzz-httpd-example"
   spec:
     ports:
     - name: web
@@ -33,9 +64,15 @@ metadata:
 kind: Route
 apiVersion: v1
 metadata:
-  spec:
-spec:
-path: /
-  to:
-    kind: Service
+  name: "zzz-httpd-example"
+  namespace: "zzz-httpd-example"
+  labels:
+    app: "zzz-httpd-example"
     name: "zzz-httpd-example"
+  spec:
+    path: /
+      to:
+        kind: Service
+        name: "zzz-httpd-example"
+    selector:
+      name: "zzz-httpd-example"
