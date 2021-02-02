@@ -43,7 +43,7 @@ spec:
     app: "zzz-httpd-example"
 ---
 kind: Route
-apiVersion: v1
+apiVersion: route.openshift.io/v1
 metadata:
   name: "zzz-httpd-example"
   namespace: "zzz-httpd-example"
