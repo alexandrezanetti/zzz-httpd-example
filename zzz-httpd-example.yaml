@@ -34,13 +34,13 @@ metadata:
   labels:
     app: "zzz-httpd-example"
     name: "zzz-httpd-example"
-  spec:
-    ports:
-    - name: web
-      port: 8080
-      targetPort: 8080
-    selector: 
-      name: "zzz-httpd-example"
+spec:
+  ports:
+  - name: web
+    port: 8080
+    targetPort: 8080
+  selector: 
+    app: "zzz-httpd-example"
 ---
 kind: Route
 apiVersion: v1
@@ -50,10 +50,10 @@ metadata:
   labels:
     app: "zzz-httpd-example"
     name: "zzz-httpd-example"
-  spec:
-    path: /
-    to:
-      kind: Service
-      name: "zzz-httpd-example"
-    selector: 
-      name: "zzz-httpd-example"
+spec:
+  path: /
+  to:
+    kind: Service
+    name: "zzz-httpd-example"
+  selector: 
+    name: "zzz-httpd-example"
