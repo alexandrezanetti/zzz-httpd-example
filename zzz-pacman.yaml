@@ -111,17 +111,16 @@ spec:
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: zzz-pacman  
-  namespace: zzz-pacman  
+  name: zzz
+  namespace: zzz-pacman
   labels:
-    app: zzz-pacman  
-    name: zzz-pacman  
+    name: zzz-pacman
 spec:
   path: /
   to:
     kind: Service
-    name: zzz-pacman  
+    name: zzz-pacman
+    weight: 100
   port:
-    targetPort: 8080-tcp
-  selector: 
-    name: zzz-pacman  
+    targetPort: 8080
+  wildcardPolicy: None
