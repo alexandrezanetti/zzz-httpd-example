@@ -23,7 +23,7 @@ spec:
       - image: "nginxdemos/hello"
         name: "zzz-httpd-example"
         ports:
-        - containerPort: 8080
+        - containerPort: 32768
           name: http-server
 ---
 kind: Service
@@ -37,8 +37,8 @@ metadata:
 spec:
   ports:
   - name: web
-    port: 8080
-    targetPort: 8080
+    port: 32768
+    targetPort: 32768
   selector: 
     app: "zzz-httpd-example"
 ---
