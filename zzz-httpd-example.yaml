@@ -1,61 +1,127 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: "zzz-httpd-example"
+  name: zzz-pacman
 ---  
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: zzz-mongo
+  namespace: zzz-pacman   
+  name: zzz-mongo
+spec:
+  ports:
+    - port: 27017
+      targetPort: 27017
+  selector:
+    name: zzz-mongo
+---
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: "zzz-httpd-example"
-  namespace: "zzz-httpd-example"
   labels:
-    app: "zzz-httpd-example"
-    name: "zzz-httpd-example"
+    name: zzz-mongo
+  name: zzz-mongo-controller
+  namespace: zzz-pacman
 spec:
   replicas: 1
   template:
-    metadata: 
+    metadata:
       labels:
-        app: "zzz-httpd-example"
-        name: "zzz-httpd-example"
+        name: zzz-mongo
     spec:
       containers:
-      - image: "nginxdemos/hello"
-        name: "zzz-httpd-example"
+      - image: zzz-mongo
+        name: zzz-mongo
         ports:
-        - containerPort: 80
-          name: http-server
+        - name: zzz-mongo
+          containerPort: 27017
+        volumeMounts:
+            - name: zzz-mongo-persistent-storage
+              mountPath: /data/db
+      volumes:
+        - name: zzz-mongo-persistent-storage
+          persistentVolumeClaim:
+            claimName: pc-zzz-mongo-pvc
 ---
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
-  name: "zzz-httpd-example"
-  namespace: "zzz-httpd-example"
+  name: zzz-pacman
+  namespace: zzz-pacman
   labels:
-    app: "zzz-httpd-example"
-    name: "zzz-httpd-example"
+    name: zzz-pacman
 spec:
+  type: NodePort
   ports:
-  - name: web
-    port: 80
-    targetPort: 80
-  selector: 
-    app: "zzz-httpd-example"
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      nodePort: 31111
+  selector:
+    name: zzz-pacman
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  labels:
+    name: zzz-pacman
+  name: zzz-pacman
+  namespace: zzz-pacman
+spec:
+  replicas: 1
+  selector:
+    name: zzz-pacman
+  template:
+    metadata:
+      labels:
+        name: zzz-pacman
+    spec:
+      containers:
+      - image: quay.io/ifont/zzz-pacman-nodejs-app
+        name: web
+        ports:
+        - containerPort: 8080
+          name: http-server
+        env:
+        - name: zzz-mongo_SERVICE_HOST
+          value: "zzz-mongo"
+        - name: zzz-mongo_DATABASE
+          value: "zzz-pacman"
+        - name: MY_zzz-mongo_PORT
+          value: "27017"
+        - name: zzz-mongo_USE_SSL
+          value: "false"
+        - name: zzz-mongo_VALIDATE_SSL
+          value: "false"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pc-zzz-mongo-pvc
+  namespace: zzz-pacman    
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
 ---
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: "zzz-httpd-example"
-  namespace: "zzz-httpd-example"
+  name: zzz-pacman  
+  namespace: zzz-pacman  
   labels:
-    app: "zzz-httpd-example"
-    name: "zzz-httpd-example"
+    app: zzz-pacman  
+    name: zzz-pacman  
 spec:
   path: /
   to:
     kind: Service
-    name: "zzz-httpd-example"
+    name: zzz-pacman  
   port:
-    targetPort: 80-tcp
+    targetPort: 8080-tcp
   selector: 
-    name: "zzz-httpd-example"
+    name: zzz-pacman  
