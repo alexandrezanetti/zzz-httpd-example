@@ -20,10 +20,10 @@ spec:
         name: "zzz-httpd-example"
     spec:
       containers:
-      - image: "nginxdemos/hello"
+      - image: "nginx:latest"
         name: "zzz-httpd-example"
         ports:
-        - containerPort: 80
+        - containerPort: 32768
           name: http-server
 ---
 kind: Service
@@ -37,7 +37,25 @@ metadata:
 spec:
   ports:
   - name: web
-    port: 80
-    targetPort: 80
+    port: 32768
+    targetPort: 32768
   selector: 
     app: "zzz-httpd-example"
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: "zzz-httpd-example"
+  namespace: "zzz-httpd-example"
+  labels:
+    app: "zzz-httpd-example"
+    name: "zzz-httpd-example"
+spec:
+  path: /
+  to:
+    kind: Service
+    name: "zzz-httpd-example"
+  port:
+    targetPort: 32768-tcp
+  selector: 
+    name: "zzz-httpd-example"
