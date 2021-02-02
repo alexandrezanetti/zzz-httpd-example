@@ -41,21 +41,3 @@ spec:
     targetPort: 80
   selector: 
     app: "zzz-httpd-example"
----
-kind: Route
-apiVersion: route.openshift.io/v1
-metadata:
-  name: "zzz-httpd-example"
-  namespace: "zzz-httpd-example"
-  labels:
-    app: "zzz-httpd-example"
-    name: "zzz-httpd-example"
-spec:
-  path: /
-  to:
-    kind: Service
-    name: "zzz-httpd-example"
-  port:
-    targetPort: 80-tcp
-  selector: 
-    name: "zzz-httpd-example"
