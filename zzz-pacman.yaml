@@ -111,7 +111,7 @@ spec:
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: zzz
+  name: zzz-pacman
   namespace: zzz-pacman
   labels:
     name: zzz-pacman
