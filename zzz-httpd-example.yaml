@@ -20,10 +20,10 @@ spec:
         name: "zzz-httpd-example"
     spec:
       containers:
-      - image: "nginx:latest"
+      - image: "registry:latest"
         name: "zzz-httpd-example"
         ports:
-        - containerPort: 32768
+        - containerPort: 5010
           name: http-server
 ---
 kind: Service
@@ -37,8 +37,8 @@ metadata:
 spec:
   ports:
   - name: web
-    port: 32768
-    targetPort: 32768
+    port: 5010
+    targetPort: 5000
   selector: 
     app: "zzz-httpd-example"
 ---
@@ -56,6 +56,6 @@ spec:
     kind: Service
     name: "zzz-httpd-example"
   port:
-    targetPort: 32768-tcp
+    targetPort: 5010-tcp
   selector: 
     name: "zzz-httpd-example"
